@@ -1,12 +1,14 @@
 import React from "react";
 
-import Input from "../input/input";
-
-const AppHeader = () => {
+const AppHeader = ({ onItemAdded }) => {
     return (
         <header>
             <h1>todos</h1>
-            <Input/>
+            <input
+            className="new-todo" placeholder="What needs to be done?" autoFocus
+            onKeyDown={(e) => {
+                if (e.code === 'Enter') onItemAdded(e.target.value)
+            }}/>
         </header>
     )
 }
