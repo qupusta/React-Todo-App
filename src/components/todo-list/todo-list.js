@@ -2,15 +2,20 @@ import React from "react";
 
 import TodoListItem from "../todo-list-item/todo-list-item";
 
-const TodoList = ({ todos, onDeleted }) => {
+const TodoList = ({ todo, onDeleted, onToggleDone, onToggleEdit, changeLabel}) => {
 
-    const elements = todos.map((item) => {
+    const elements = todo.map((item) => {
         const {id, ...itemProps } = item;
 
         return (
-            <TodoListItem 
-            {...itemProps} 
-            onDeleted={() => onDeleted(id)}/>
+            <TodoListItem
+            todostate={todo}
+            changeLabel={changeLabel}
+            {...itemProps}
+            onDeleted={() => onDeleted(id)}
+            onToggleDone={() => onToggleDone(id)}
+            onToggleEdit={() => onToggleEdit(id)}
+            key={id}/>
         )
     })
 

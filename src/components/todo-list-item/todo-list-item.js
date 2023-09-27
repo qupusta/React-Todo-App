@@ -1,66 +1,49 @@
 import React, { Component } from "react";
+import { formatDistanceToNow } from 'date-fns';
+
+import Form from "../form/form";
 
 export default class TodoListItem extends Component {
-
-    constructor() {
-        super();
-
-        this.state = {
-            completed: false,
-            edited: false
-        }
-
-        this.onToggleClick = () => {
-            this.setState(({completed, active}) => {
-                return {
-                    completed: !completed,
-                    active: !active
-                }
-            })
-        }
-
-        this.onToggleEdit = () => {
-            this.setState(({edited}) => {                
-                return {
-                    edited: !edited
-                }
-            })
-        }
-    }
-
     render() {
-        const { id, label, onDeleted } = this.props;
-        const { completed, edited } = this.state;
-        
-
+        const {
+             id, label, completed, editing, createDate,
+             onDeleted, onToggleDone, onToggleEdit,
+             changeLabel
+            } = this.props;
 
         let classNames = '';
+
         if (completed) {
             classNames += 'completed'
         }
 
-        if (edited) {
+        if (editing && !completed) {
             classNames += 'editing'
         }
+        
+        const dateFns = formatDistanceToNow(
+            createDate,
+            {includeSeconds: true, addSuffix: true},
+        )
 
         return (
+            
             <li className={classNames}>
                 <div className="view">
                     <input id={id} className="toggle" type="checkbox"
-                        onClick={this.onToggleClick} />
+                        onClick={onToggleDone}
+                        defaultChecked={completed}/>
                     <label htmlFor={id}>
                         <span className="description"> {label} </span>
-                        <span className="created"> created </span>
+                        <span className="created"> created {dateFns}</span>
                     </label>
                     <button className="icon icon-edit"
-                    onClick={this.onToggleEdit}
+                    onClick={onToggleEdit}
                     ></button>
                     <button className="icon icon-destroy"
                     onClick={onDeleted}></button>
                 </div>
-                <form>
-                    <input type="text" className="edit"/>
-                </form>
+                <Form label={label} changeLabel={changeLabel} />
             </li>
 
         )
