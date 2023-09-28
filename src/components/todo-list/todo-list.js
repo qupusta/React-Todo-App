@@ -28,6 +28,12 @@ const TodoList = ({ todo, onDeleted, onToggleDone, onToggleEdit, changeLabel}) =
     )
 }
 
+TodoList.defaultProps = {
+    onDeleted: () => {},
+    onToggleDone: () => {},
+    onToggleEdit: () => {},
+    changeLabel: () => {}
+}
 
 TodoList.propsTypes = {
     todo: PropTypes.arrayOf(PropTypes.object).isRequired
