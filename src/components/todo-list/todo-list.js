@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types'
 
 import TodoListItem from "../todo-list-item/todo-list-item";
 
@@ -10,6 +11,7 @@ const TodoList = ({ todo, onDeleted, onToggleDone, onToggleEdit, changeLabel}) =
         return (
             <TodoListItem
             todostate={todo}
+            id={id}
             changeLabel={changeLabel}
             {...itemProps}
             onDeleted={() => onDeleted(id)}
@@ -24,6 +26,11 @@ const TodoList = ({ todo, onDeleted, onToggleDone, onToggleEdit, changeLabel}) =
             {elements}
         </ul>
     )
+}
+
+
+TodoList.propsTypes = {
+    todo: PropTypes.arrayOf(PropTypes.object).isRequired
 }
 
 export default TodoList;

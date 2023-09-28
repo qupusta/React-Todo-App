@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { formatDistanceToNow } from 'date-fns';
+import PropTypes from 'prop-types'
 
 import Form from "../form/form";
 
 export default class TodoListItem extends Component {
+
     render() {
         const {
              id, label, completed, editing, createDate,
@@ -25,6 +27,7 @@ export default class TodoListItem extends Component {
             createDate,
             {includeSeconds: true, addSuffix: true},
         )
+        console.log(id)
 
         return (
             
@@ -48,4 +51,15 @@ export default class TodoListItem extends Component {
 
         )
     }
+}
+
+TodoListItem.propTypes = {
+    onDeleted: PropTypes.func,
+    onToggleDone: PropTypes.func,
+    changeLabel: PropTypes.func,
+    onToggleEdit: PropTypes.func,
+    editing: PropTypes.bool,
+    completed: PropTypes.bool,
+    label: PropTypes.string,
+    id: PropTypes.number.isRequired
 }

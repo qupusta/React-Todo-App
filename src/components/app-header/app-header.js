@@ -7,7 +7,8 @@ const AppHeader = ({ onItemAdded }) => {
             <input
             className="new-todo" placeholder="What needs to be done?" autoFocus
             onKeyDown={(e) => {
-                if (e.code === 'Enter') {
+                if (e.code === 'Enter' && 
+                    !e.target.value.match(/^[ ]+$/)) {
                     onItemAdded(e.target.value)
                     e.target.value = '';
                 }
