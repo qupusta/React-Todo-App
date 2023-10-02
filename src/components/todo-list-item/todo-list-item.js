@@ -26,8 +26,7 @@ export default class TodoListItem extends Component {
           <label htmlFor={id}>
             <span className="description"> {label} </span>
             <span className="created">
-              {' '}
-              created
+              {'created' + ' '}
               {dateFns}
             </span>
           </label>
