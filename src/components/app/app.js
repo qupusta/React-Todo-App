@@ -103,7 +103,7 @@ export default class App extends Component {
     return {
       label,
       editing: false,
-      id: this.maxId + 1,
+      id: this.maxId++,
       completed: false,
       createDate: new Date(),
     }
