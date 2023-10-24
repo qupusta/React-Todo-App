@@ -10,11 +10,11 @@ export default class AppHeader extends Component {
     this.setState({ label: e.target.value })
   }
   handleChangeSec = (e) => {
-    e.target.value = e.target.value.replace(/[^\d]/g, '')
+    e.target.value = +e.target.value.replace(/[^\d]/g, '')
     this.setState({ timerSec: e.target.value })
   }
   handleChangeMin = (e) => {
-    e.target.value = e.target.value.replace(/[^\d]/g, '')
+    e.target.value = +e.target.value.replace(/[^\d]/g, '')
     this.setState({ timerMin: e.target.value })
   }
   handleSubmit = (e) => {
