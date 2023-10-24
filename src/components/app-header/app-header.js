@@ -26,8 +26,6 @@ export default class AppHeader extends Component {
         alert('Enter the description')
       } else {
         this.props.onItemAdded(label, timerSec, timerMin)
-        e.preventDefault()
-        e.currentTarget.reset()
         this.setState(() => {
           return {
             label: '',
@@ -39,12 +37,16 @@ export default class AppHeader extends Component {
     }
   }
   render() {
-    // const { onItemAdded } = this.props
     return (
       <header>
         <h1>todos</h1>
         <form className="new-todo-form" onKeyDown={this.handleSubmit}>
-          <input onChange={this.handleChangeName} className="new-todo" placeholder="What needs to be done?" />
+          <input
+            value={this.state.label}
+            onChange={this.handleChangeName}
+            className="new-todo"
+            placeholder="What needs to be done?"
+          />
           <input onChange={this.handleChangeMin} className="new-todo-form__timer" placeholder="Min" />
           <input onChange={this.handleChangeSec} className="new-todo-form__timer" placeholder="Sec" />
         </form>
@@ -52,10 +54,3 @@ export default class AppHeader extends Component {
     )
   }
 }
-
-// onKeyDown={(e) => {
-//   if (e.code === 'Enter' && !e.target.value.match(/^[ ]+$/)) {
-//     e.target.value
-//     e.target.value = ''
-//   }
-// }}

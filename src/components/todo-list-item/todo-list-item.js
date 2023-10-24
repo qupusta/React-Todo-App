@@ -7,7 +7,9 @@ export default class TodoListItem extends Component {
   interval
   toggleTimer = () => {
     clearInterval(this.interval)
-    this.interval = setInterval(this.props.onStartTimer, 1000)
+    if (this.props.timer.seconds > 0 || this.props.timer.minutes > 0) {
+      this.interval = setInterval(this.props.onStartTimer, 1000)
+    }
   }
   stopTimer = () => {
     clearInterval(this.interval)
@@ -29,13 +31,14 @@ export default class TodoListItem extends Component {
     let classNames = ''
     if (completed) {
       classNames += 'completed'
+      this.stopTimer()
     }
 
     if (editing && !completed) {
       classNames += 'editing'
     }
 
-    if (timer.minutes < 1 && timer.seconds == 0) {
+    if (timer.minutes === 0 && timer.seconds === 0) {
       this.stopTimer()
     }
 
@@ -48,7 +51,7 @@ export default class TodoListItem extends Component {
           <label htmlFor={id}>
             <span className="title"> {label} </span>
             <span className="description">
-              <button className="icon icon-play" onClick={this.toggleTimer} />
+              <button className="icon icon-play" onClick={!completed ? this.toggleTimer : null} />
               <button className="icon icon-pause" onClick={this.stopTimer} />
               <span style={{ marginLeft: 5 }}>{`${timer.minutes}:${timer.seconds}`}</span>
             </span>
