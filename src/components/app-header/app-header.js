@@ -29,8 +29,6 @@ export default class AppHeader extends Component {
         this.setState(() => {
           return {
             label: '',
-            timerMin: 0,
-            timerSec: 0,
           }
         })
       }
