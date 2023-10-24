@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
 
 import AppHeader from '../app-header/app-header'
@@ -13,6 +14,24 @@ export default class App extends Component {
     filter: '',
   }
 
+  onStartTimer = (id) => {
+    this.setState(({ tododata }) => {
+      const idx = tododata.findIndex((el) => el.id === id)
+      const oldTimer = tododata[idx].timer
+      let newSeconds = oldTimer.seconds
+      let newMinutes = oldTimer.minutes
+      let newTimer = { ...oldTimer, minutes: newMinutes, seconds: newSeconds - 1 }
+      if (newSeconds < 1) {
+        newTimer = { minutes: newMinutes - 1, seconds: 59 }
+      }
+      const newItem = { ...tododata[idx], timer: newTimer }
+      const newArray = [...tododata.slice(0, idx), newItem, ...tododata.slice(idx + 1)]
+      return {
+        tododata: newArray,
+      }
+    })
+  }
+
   deleteItem = (id) => {
     this.setState(({ tododata }) => {
       const idx = tododata.findIndex((el) => el.id === id)
@@ -25,9 +44,10 @@ export default class App extends Component {
     })
   }
 
-  addItem = (text) => {
-    if (text.length !== 0) {
-      const newItem = this.createTodoItem(text)
+  addItem = (text, sec = 0, min = 0) => {
+    if (text.length !== 0 && !isNaN(sec + min)) {
+      const timer = { minutes: min, seconds: sec }
+      const newItem = this.createTodoItem(text, timer)
 
       this.setState(({ tododata }) => {
         const newArr = [...tododata, newItem]
@@ -99,9 +119,10 @@ export default class App extends Component {
     return items.filter((item) => item.label.indexOf(term) > -1)
   }
 
-  createTodoItem(label) {
+  createTodoItem(label, timer) {
     return {
       label,
+      timer,
       editing: false,
       id: this.maxId++,
       completed: false,
@@ -126,12 +147,12 @@ export default class App extends Component {
     const { tododata, term, filter } = this.state
     const visibleItems = this.filter(this.search(tododata, term), filter)
     const todoCount = this.state.tododata.filter((el) => !el.completed).length
-
     return (
       <div className="todoapp">
         <AppHeader onItemAdded={this.addItem} />
         <section className="main">
           <TodoList
+            onStartTimer={this.onStartTimer}
             todo={visibleItems}
             changeLabel={this.changeLabel}
             onDeleted={this.deleteItem}
