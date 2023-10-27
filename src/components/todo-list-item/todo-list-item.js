@@ -7,12 +7,16 @@ export default class TodoListItem extends Component {
   interval
   toggleTimer = () => {
     clearInterval(this.interval)
-    if (this.props.timer.seconds > 0 || this.props.timer.minutes > 0) {
-      this.interval = setInterval(this.props.onStartTimer, 1000)
+    if (this.props.timer.seconds > 0) {
+      this.interval = setInterval(this.props.onStartTimer, 100)
+      setInterval(this.convertSeconds, 100)
     }
   }
   stopTimer = () => {
     clearInterval(this.interval)
+  }
+  componentWillUnmount() {
+    this.stopTimer()
   }
   render() {
     const {
@@ -38,9 +42,12 @@ export default class TodoListItem extends Component {
       classNames += 'editing'
     }
 
-    if (timer.minutes === 0 && timer.seconds === 0) {
+    if (timer.seconds === 0) {
       this.stopTimer()
     }
+
+    let showMinutes = Math.floor(timer.seconds / 60)
+    let showSeconds = timer.seconds % 60
 
     const dateFns = formatDistanceToNow(createDate, { includeSeconds: true, addSuffix: true })
 
@@ -53,7 +60,7 @@ export default class TodoListItem extends Component {
             <span className="description">
               <button className="icon icon-play" onClick={!completed ? this.toggleTimer : null} />
               <button className="icon icon-pause" onClick={this.stopTimer} />
-              <span style={{ marginLeft: 5 }}>{`${timer.minutes}:${timer.seconds}`}</span>
+              <span style={{ marginLeft: 5 }}>{`${showMinutes}:${showSeconds}`}</span>
             </span>
             <span className="description">
               {'created' + ' '}

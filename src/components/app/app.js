@@ -18,12 +18,9 @@ export default class App extends Component {
     this.setState(({ tododata }) => {
       const idx = tododata.findIndex((el) => el.id === id)
       const oldTimer = tododata[idx].timer
+      console.log(oldTimer)
       let newSeconds = oldTimer.seconds
-      let newMinutes = oldTimer.minutes
-      let newTimer = { ...oldTimer, minutes: newMinutes, seconds: newSeconds - 1 }
-      if (newSeconds < 1) {
-        newTimer = { minutes: newMinutes - 1, seconds: 59 }
-      }
+      let newTimer = { ...oldTimer, seconds: newSeconds - 1 }
       const newItem = { ...tododata[idx], timer: newTimer }
       const newArray = [...tododata.slice(0, idx), newItem, ...tododata.slice(idx + 1)]
       return {
@@ -44,9 +41,9 @@ export default class App extends Component {
     })
   }
 
-  addItem = (text, sec = 0, min = 0) => {
-    if (text.length !== 0 && !isNaN(sec + min)) {
-      const timer = { minutes: min, seconds: sec }
+  addItem = (text, sec = 0) => {
+    if (text.length !== 0 && !isNaN(sec)) {
+      const timer = { seconds: sec }
       const newItem = this.createTodoItem(text, timer)
 
       this.setState(({ tododata }) => {

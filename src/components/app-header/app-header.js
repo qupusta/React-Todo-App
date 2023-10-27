@@ -3,29 +3,41 @@ import React, { Component } from 'react'
 export default class AppHeader extends Component {
   state = {
     label: '',
-    timerSec: 0,
-    timerMin: 0,
+    timer: null,
   }
+  min = 0
+  sec = 0
+
   handleChangeName = (e) => {
     this.setState({ label: e.target.value })
   }
   handleChangeSec = (e) => {
     e.target.value = +e.target.value.replace(/[^\d]/g, '')
-    this.setState({ timerSec: e.target.value })
+    if (e.target.value > 59) {
+      alert('The number you entered is too high. Use numbers no more than 59')
+      return
+    } else {
+      this.sec = e.target.value
+      this.setState({ timer: Number(this.min) * 60 + Number(this.sec) })
+    }
   }
   handleChangeMin = (e) => {
     e.target.value = +e.target.value.replace(/[^\d]/g, '')
-    this.setState({ timerMin: e.target.value })
+    if (e.target.value > 59) {
+      alert('The number you entered is too high. Use numbers no more than 59')
+      return
+    } else {
+      this.min = e.target.value
+      this.setState({ timer: Number(this.min) * 60 + Number(this.sec) })
+    }
   }
   handleSubmit = (e) => {
     if (e.code === 'Enter' && !e.target.value.match(/^[ ]+$/)) {
-      const { label, timerMin, timerSec } = this.state
-      if (timerMin > 59 || timerSec > 59) {
-        alert('Have no time, enter a value not greater than 59')
-      } else if (!label) {
+      const { label, timer } = this.state
+      if (!label) {
         alert('Enter the description')
       } else {
-        this.props.onItemAdded(label, timerSec, timerMin)
+        this.props.onItemAdded(label, timer)
         this.setState(() => {
           return {
             label: '',
