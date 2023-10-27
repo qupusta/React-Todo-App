@@ -8,8 +8,7 @@ export default class TodoListItem extends Component {
   toggleTimer = () => {
     clearInterval(this.interval)
     if (this.props.timer.seconds > 0) {
-      this.interval = setInterval(this.props.onStartTimer, 100)
-      setInterval(this.convertSeconds, 100)
+      this.interval = setInterval(this.props.onStartTimer, 1000)
     }
   }
   stopTimer = () => {
