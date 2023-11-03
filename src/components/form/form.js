@@ -1,25 +1,21 @@
-import React, { Component } from 'react'
-export default class Form extends Component {
-  state = {
-    label: this.props.label,
+import React, { useState } from 'react'
+const Form = ({ label, changeLabel }) => {
+  const [newLabel, setLabel] = useState(label)
+
+  const handleLabelChange = (e) => {
+    setLabel(e.target.value)
   }
 
-  handleLabelChange = (e) => {
-    this.setState({
-      label: e.target.value,
-    })
-  }
-
-  onHandleSubmit = (e) => {
+  const onHandleSubmit = (e) => {
     e.preventDefault()
-    this.props.changeLabel(this.props.label, this.state.label)
+    changeLabel(label, newLabel)
   }
 
-  render() {
-    return (
-      <form onSubmit={this.onHandleSubmit}>
-        <input type="text" className="edit" onChange={this.handleLabelChange} value={this.state.label} />
-      </form>
-    )
-  }
+  return (
+    <form onSubmit={onHandleSubmit}>
+      <input type="text" className="edit" onChange={handleLabelChange} value={newLabel} />
+    </form>
+  )
 }
+
+export default Form

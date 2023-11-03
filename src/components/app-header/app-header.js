@@ -1,66 +1,54 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 
-export default class AppHeader extends Component {
-  state = {
-    label: '',
-    timer: null,
+const AppHeader = ({ onItemAdded }) => {
+  const [label, setLabel] = useState('')
+  const [timer, setTimer] = useState(0)
+  const handleChangeName = (e) => {
+    setLabel(e.target.value)
   }
-  min = 0
-  sec = 0
-
-  handleChangeName = (e) => {
-    this.setState({ label: e.target.value })
-  }
-  handleChangeSec = (e) => {
+  const handleChangeSec = (e) => {
     e.target.value = +e.target.value.replace(/[^\d]/g, '')
     if (e.target.value > 59) {
       alert('The number you entered is too high. Use numbers no more than 59')
       return
     } else {
-      this.sec = e.target.value
-      this.setState({ timer: Number(this.min) * 60 + Number(this.sec) })
+      setTimeout(() => {
+        setTimer(timer + Number(e.target.value))
+      }, 800)
     }
   }
-  handleChangeMin = (e) => {
+  const handleChangeMin = (e) => {
     e.target.value = +e.target.value.replace(/[^\d]/g, '')
     if (e.target.value > 59) {
       alert('The number you entered is too high. Use numbers no more than 59')
       return
     } else {
-      this.min = e.target.value
-      this.setState({ timer: Number(this.min) * 60 + Number(this.sec) })
+      setTimeout(() => {
+        setTimer(timer + Number(e.target.value) * 60)
+      }, 800)
     }
   }
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     if (e.code === 'Enter' && !e.target.value.match(/^[ ]+$/)) {
-      const { label, timer } = this.state
       if (!label) {
         alert('Enter the description')
       } else {
-        this.props.onItemAdded(label, timer)
-        this.setState(() => {
-          return {
-            label: '',
-          }
-        })
+        onItemAdded(label, timer)
+        setLabel('')
       }
+      setTimer(0)
     }
   }
-  render() {
-    return (
-      <header>
-        <h1>todos</h1>
-        <form className="new-todo-form" onKeyDown={this.handleSubmit}>
-          <input
-            value={this.state.label}
-            onChange={this.handleChangeName}
-            className="new-todo"
-            placeholder="What needs to be done?"
-          />
-          <input onChange={this.handleChangeMin} className="new-todo-form__timer" placeholder="Min" />
-          <input onChange={this.handleChangeSec} className="new-todo-form__timer" placeholder="Sec" />
-        </form>
-      </header>
-    )
-  }
+  return (
+    <header>
+      <h1>todos</h1>
+      <form className="new-todo-form" onKeyDown={handleSubmit}>
+        <input value={label} onChange={handleChangeName} className="new-todo" placeholder="What needs to be done?" />
+        <input onChange={handleChangeMin} className="new-todo-form__timer" placeholder="Min" />
+        <input onChange={handleChangeSec} className="new-todo-form__timer" placeholder="Sec" />
+      </form>
+    </header>
+  )
 }
+
+export default AppHeader

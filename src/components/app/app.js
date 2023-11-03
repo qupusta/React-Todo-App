@@ -1,133 +1,110 @@
 /* eslint-disable no-unused-vars */
-import React, { Component } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import AppHeader from '../app-header/app-header'
 import TodoList from '../todo-list/todo-list'
 import Footer from '../footer/footer'
 
-export default class App extends Component {
-  maxId = 100
+const App = () => {
+  const [tododata, setData] = useState([])
+  const [term, setTerm] = useState('')
+  const [filter, setFilter] = useState('all')
 
-  state = {
-    tododata: [],
-    term: '',
-    filter: '',
-  }
-
-  onStartTimer = (id) => {
-    this.setState(({ tododata }) => {
+  const onStartTimer = useCallback((id) => {
+    setData((tododata) => {
       const idx = tododata.findIndex((el) => el.id === id)
       const oldTimer = tododata[idx].timer
-      console.log(oldTimer)
       let newSeconds = oldTimer.seconds
       let newTimer = { ...oldTimer, seconds: newSeconds - 1 }
       const newItem = { ...tododata[idx], timer: newTimer }
       const newArray = [...tododata.slice(0, idx), newItem, ...tododata.slice(idx + 1)]
-      return {
-        tododata: newArray,
-      }
+      return newArray
     })
+  }, [])
+
+  const createTodoItem = (label, timer = 0) => {
+    const task = {
+      label,
+      timer,
+      editing: false,
+      id: Math.round(Math.random() * 100),
+      completed: false,
+      createDate: new Date(),
+    }
+    return task
   }
 
-  deleteItem = (id) => {
-    this.setState(({ tododata }) => {
-      const idx = tododata.findIndex((el) => el.id === id)
+  const deleteItem = (id) => {
+    const idx = tododata.findIndex((el) => el.id === id)
 
-      const newArray = [...tododata.slice(0, idx), ...tododata.slice(idx + 1)]
-
-      return {
-        tododata: newArray,
-      }
-    })
+    const newArray = [...tododata.slice(0, idx), ...tododata.slice(idx + 1)]
+    setData(newArray)
   }
 
-  addItem = (text, sec = 0) => {
-    if (text.length !== 0 && !isNaN(sec)) {
+  const addItem = (text, sec = 0) => {
+    if (text) {
       const timer = { seconds: sec }
-      const newItem = this.createTodoItem(text, timer)
+      const newItem = createTodoItem(text, timer)
 
-      this.setState(({ tododata }) => {
-        const newArr = [...tododata, newItem]
-
-        return {
-          tododata: newArr,
-        }
-      })
+      const newArray = [...tododata, newItem]
+      setData(newArray)
     }
   }
 
-  onFilterChange = (filter) => {
-    this.setState({ filter })
-  }
-
-  onClearCompleted = () => {
-    const idxArr = this.state.tododata.filter((el) => el.completed)
-    idxArr.forEach((el) => {
-      this.deleteItem(el.id)
+  const onClearCompleted = () => {
+    const newArr = []
+    tododata.forEach((el) => {
+      if (!el.completed) {
+        newArr.push(el)
+      }
     })
+    setData(newArr)
   }
 
-  onToggleDone = (id) => {
-    this.setState(({ tododata }) => {
+  const onToggleDone = (id) => {
+    setData((tododata) => {
       const idx = tododata.findIndex((el) => el.id === id)
       const oldItem = tododata[idx]
       const newItem = { ...oldItem, completed: !oldItem.completed }
 
       const newArray = [...tododata.slice(0, idx), newItem, ...tododata.slice(idx + 1)]
 
-      return {
-        tododata: newArray,
-      }
+      return newArray
     })
   }
 
-  onToggleEdit = (id) => {
-    this.setState(({ tododata }) => {
+  const onToggleEdit = (id) => {
+    setData((tododata) => {
       const idx = tododata.findIndex((el) => el.id === id)
       const oldItem = tododata[idx]
       const newItem = { ...oldItem, editing: !oldItem.editing }
 
       const newArray = [...tododata.slice(0, idx), newItem, ...tododata.slice(idx + 1)]
 
-      return {
-        tododata: newArray,
-      }
+      return newArray
     })
   }
 
-  changeLabel = (oldLabel, newLabel) => {
-    this.setState(({ tododata }) => {
+  const changeLabel = (oldLabel, newLabel) => {
+    setData((tododata) => {
       const idx = tododata.findIndex((el) => el.label === oldLabel)
       const oldItem = tododata[idx]
       const newItem = { ...oldItem, label: newLabel, editing: !oldItem.editing }
 
       const newArray = [...tododata.slice(0, idx), newItem, ...tododata.slice(idx + 1)]
 
-      return {
-        tododata: newArray,
-      }
+      return newArray
     })
   }
 
-  search(items, term) {
+  function search(items, term) {
     if (term.length === 0) {
       return items
     }
     return items.filter((item) => item.label.indexOf(term) > -1)
   }
 
-  createTodoItem(label, timer) {
-    return {
-      label,
-      timer,
-      editing: false,
-      id: this.maxId++,
-      completed: false,
-      createDate: new Date(),
-    }
-  }
-
-  filter(items, filter) {
+  function filterTodo(items, filter) {
     switch (filter) {
       case 'all':
         return items
@@ -140,30 +117,24 @@ export default class App extends Component {
     }
   }
 
-  render() {
-    const { tododata, term, filter } = this.state
-    const visibleItems = this.filter(this.search(tododata, term), filter)
-    const todoCount = this.state.tododata.filter((el) => !el.completed).length
-    return (
-      <div className="todoapp">
-        <AppHeader onItemAdded={this.addItem} />
-        <section className="main">
-          <TodoList
-            onStartTimer={this.onStartTimer}
-            todo={visibleItems}
-            changeLabel={this.changeLabel}
-            onDeleted={this.deleteItem}
-            onToggleDone={this.onToggleDone}
-            onToggleEdit={this.onToggleEdit}
-          />
-        </section>
-        <Footer
-          todosLeft={todoCount}
-          filter={filter}
-          onFilterChange={this.onFilterChange}
-          onClearCompleted={this.onClearCompleted}
+  const visibleItems = filterTodo(search(tododata, term), filter)
+  const todoCount = tododata.filter((el) => !el.completed).length
+  return (
+    <div className="todoapp">
+      <AppHeader onItemAdded={addItem} />
+      <section className="main">
+        <TodoList
+          onStartTimer={onStartTimer}
+          todo={visibleItems}
+          changeLabel={changeLabel}
+          onDeleted={deleteItem}
+          onToggleDone={onToggleDone}
+          onToggleEdit={onToggleEdit}
         />
-      </div>
-    )
-  }
+      </section>
+      <Footer todosLeft={todoCount} filter={filter} onFilterChange={setFilter} onClearCompleted={onClearCompleted} />
+    </div>
+  )
 }
+
+export default App

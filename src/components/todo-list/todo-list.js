@@ -12,10 +12,10 @@ function TodoList({ todo, onDeleted, onToggleDone, onToggleEdit, changeLabel, on
         id={id}
         changeLabel={changeLabel}
         {...itemProps}
-        onStartTimer={() => onStartTimer(id)}
-        onDeleted={() => onDeleted(id)}
-        onToggleDone={() => onToggleDone(id)}
-        onToggleEdit={() => onToggleEdit(id)}
+        onStartTimer={onStartTimer}
+        onDeleted={onDeleted}
+        onToggleDone={onToggleDone}
+        onToggleEdit={onToggleEdit}
         key={id}
       />
     )
